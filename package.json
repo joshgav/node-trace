@@ -1,0 +1,26 @@
+{
+  "name": "diagnostics",
+  "version": "0.0.1",
+  "description": "Make it easy to diagnose issues within Node apps.",
+  "gypfile": "true",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/joshgav/node-diagnostics.git"
+  },
+  "keywords": [
+    "diagnostics",
+    "trace"
+  ],
+  "author": "Josh Gavant (josh.gavant@outlook.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/joshgav/node-diagnostics/issues"
+  },
+  "homepage": "https://github.com/joshgav/node-diagnostics#readme"
+}
