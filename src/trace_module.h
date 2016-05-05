@@ -11,28 +11,30 @@ using namespace std;
 class TraceBroker {
 
 public:
-  // Publishers 
+  // Called by native publishers to publish traces.
   bool Trace(string category, map<string, string> object);
 
-  // No point in returning anything since we don't know how things will go.
   void TraceNextTick(string category, map<string, string> object);
 
-  // This is where native subscribers can register.
+  // Called by native listeners to subscribe to traces.
   bool RegisterTraceListener(fp_trace_listner listener);
 
-  // This is for JS listeners. Args:
-  // args[0]: (category, object) => { return void; }
-  bool RegisterTraceListener(const FunctionCallbackInfo<Value>& args);
+  // TODO Add filtering on publish and subscribe sides.
 
   TraceBroker Singleton();
 
 protected:
   TraceBroker();
 
+  // Used to process traces for native listeners.
+  bool OnIncomingTraceNative(string category, map<string, string> object);
+  bool NotifyTraceNative(string category, map<string, string> object);
+
 private:
   // we could potentially have a few brokers, best to take minor hit of array
-  // For now we'll only use 
+  // For now we'll only use 1 for the singleton.
   static array<TraceBroker,16> s_trace_brokers_;
+  static array<fp_trace_listener, 16> s_trace_listeners_native_;
 
 } // class TraceBroker
 
