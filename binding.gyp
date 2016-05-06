@@ -1,10 +1,15 @@
 {
   "targets": [
     {
-      "target_name": "diagnostics",
-      "sources": [ "./src/trace_module.cc" ],
+      "target_name": "trace_native",
+      "sources": [
+        "./src/trace_module.cc",
+        "./src/trace_broker.cc",
+        "./src/diag_utils.cc"
+      ],
       "include_dirs": [
-        "./src"
+        "./src",
+        "./third_party/json/src"
       ]
     }
   ]
