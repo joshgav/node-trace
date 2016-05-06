@@ -1,63 +1,71 @@
-#include "v8.h"
-#include "node.h"
-#include "diag_utils.h"
-#include "third_party/json/json.hpp"
+#ifndef DIAG_TRACE_BROKER_H_
+#define DIAG_TRACE_BROKER_H_
 
-#include <string>
+#include "v8.h"
+#include "diag_utils.h"
+
 #include <map>
 #include <vector>
-#include <array>
 
 namespace diag {
 namespace trace {
 
-// TODO Should be a singleton or static and threadsafe so that it can be used
-// safely everywhere, even say in the _debug_agent.
+using namespace v8;
+
 class TraceBroker {
-  // TODO Add filtering on publish and subscribe sides.
 
 public:
-  // Called by native publishers to publish traces.
-  bool Trace(string category, map<string, string> object);
+  /** Called by native components to publish traces. */
+  bool Trace(const char* category, std::map<const char*, const char*> trace_map);
 
-  inline void TraceNextTick(string category, map<string, string> object) {
-    // process.nextTick(Trace());
+  /** Enqueue trace for execution at another time/place.
+   *  Could be another thread or a uv_async_t handle.
+   */
+  void TraceNextTick(const char* category, std::map<const char*, const char*> trace_map);
+
+  /** Called by native components to subscribe to traces.
+   *  TODO Allow filtering by category names.
+   */
+  typedef void (*fp_trace_listener)(const char* category, std::map<const char*, const char*> trace_map); 
+  inline void RegisterListener(fp_trace_listener listener) {
+    s_trace_listeners_native_.push_back(&listener);
   }
 
-  // Called by native listeners to subscribe to traces.
-  inline bool RegisterTraceListener(fp_trace_listner listener) {
-    s_trace_listeners_native_.push_back(listener);
-  }
+  static TraceBroker* Singleton();
 
-  static TraceBroker Singleton();
-
+  /**
+   * If user has imported `trace.js` this returns a reference
+   * to the JS `exports` object. This allows us to send traces from
+   * native publishers to JS listeners.
+   */
   inline Local<Object> trace_js() { return trace_js_; }
   inline void set_trace_js(Local<Object> value) { trace_js_ = value; }
+
+  // must be public for access from JS
+  void DispatchNativeFromJS(const FunctionCallbackInfo<Value>& info);
+  static void DispatchNativeFromJS_Static(const FunctionCallbackInfo<Value>& info);
 
 protected:
   TraceBroker();
 
   // Common trace processing.
-  bool TraceInternal(string category, map<string, string> object);
+  bool TraceInternal(const char* category, std::map<const char*, const char*> trace_map);
 
-  // Dispatch events to listeners
-  bool Dispatch(string category, map<string, string> object);
-  bool DispatchNative(string category, map<string, string> object);
-  bool DispatchNativeFromJS(const FunctionCallbackInfo<Value>& info);
-  bool DispatchJSFromNative(string category, map<string, string> object);
+  // Dispatchers for native and JS listeners.
+  bool Dispatch(const char* category, std::map<const char*, const char*> trace_map);
+  bool DispatchNative(const char* category, std::map<const char*, const char*> trace_map);
+  bool DispatchJSFromNative(const char* category, std::map<const char*, const char*> trace_map);
 
 private:
-  static TraceBroker s_trace_broker_singleton_;
+  static TraceBroker* s_trace_broker_singleton_;
 
-  vector<fp_trace_listener> s_trace_listeners_native_;
+  std::vector<fp_trace_listener*> s_trace_listeners_native_;
   Local<Object> trace_js_;
 
-} // class TraceBroker
-
-// Native subscribers are notified through a callback of this type.
-typedef void (*fp_trace_listener)(string category, map<string, string> object); 
-
+}; // class TraceBroker
 
 } // namespace trace
 } // namespace diag
+
+#endif // DIAG_TRACE_BROKER_H_
 

@@ -1,15 +1,20 @@
-#include "node.h"
+#ifndef DIAG_TRACE_MODULE_H_
+#define DIAG_TRACE_MODULE_H_ 
+
 #include "v8.h"
 
 namespace diag {
 namespace trace {
 
-addon_context_register_func(
-    v8::Local<v8::Object> exports,
-    v8::Local<v8::Value> module,
-    v8::Local<v8::Context> context,
+using namespace v8;
+
+void addon_context_register_func(
+    Local<Object> exports,
+    Local<Value> module,
+    Local<Context> context,
     void* priv);
 
 } // namespace trace
 } // namespace diag
 
+#endif // DIAG_TRACE_MODULE_H_

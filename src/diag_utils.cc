@@ -1,11 +1,14 @@
 #include "diag_utils.h"
+#include "node.h"
 
 namespace diag {
+namespace utils {
 
 using namespace v8;
 
+/*
 static Local<Function> ScriptToFunction(const char* script_source, const char* filename) {
-  Isolate isolate = Isolate::GetCurrent();
+  Isolate* isolate = Isolate::GetCurrent();
   EscapableHandleScope scope(isolate);
 
   ScriptOrigin origin(CharStringToV8String(filename));
@@ -22,9 +25,22 @@ static Local<Function> ScriptToFunction(const char* script_source, const char* f
   Local<Function> f = Local<Function>::Cast(compiled_function);
   return f;
 }
+*/
 
 static Local<String> CharStringToV8String(const char* charString) {
-  return v8::String::NewFromUtf8(Isolate::GetCurrent(), charString, v8::NewStringType::kNormal).ToLocalChecked();
+  return String::NewFromUtf8(Isolate::GetCurrent(), charString, v8::NewStringType::kNormal).ToLocalChecked();
 }
 
+static const char* V8StringToCharString(Local<String> v8String) {
+  uint8_t buffer[(v8String->Length() + 1)];
+  int ret = v8String->WriteOneByte(buffer);
+  if (ret > 0) {
+    return reinterpret_cast<const char*>(buffer);
+  } else {
+    return "";
+  }
+}
+
+} // namespace utils
 } // namespace diag
+
