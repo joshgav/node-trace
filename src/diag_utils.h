@@ -8,11 +8,11 @@ namespace utils {
 
 using namespace v8;
 
-static Local<Function> ScriptToFunction(const char* script_source, const char* filename);
+// static Local<Function> ScriptToFunction(const char* script_source, const char* filename);
 
-static Local<String> CharStringToV8String(const char* charString);
+Local<String> CharStringToV8String(const char* charString);
 
-static const char* V8StringToCharString(Local<String> v8String);
+const char* V8StringToCharString(Local<String> v8String);
 
 } // namespace utils
 } // namespace diag

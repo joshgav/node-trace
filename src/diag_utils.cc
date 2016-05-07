@@ -1,8 +1,6 @@
 #include "diag_utils.h"
 #include "node.h"
-
-namespace diag {
-namespace utils {
+#include "v8.h"
 
 using namespace v8;
 
@@ -27,20 +25,18 @@ static Local<Function> ScriptToFunction(const char* script_source, const char* f
 }
 */
 
-static Local<String> CharStringToV8String(const char* charString) {
+Local<String> diag::utils::CharStringToV8String(const char* charString) {
   return String::NewFromUtf8(Isolate::GetCurrent(), charString, v8::NewStringType::kNormal).ToLocalChecked();
 }
 
-static const char* V8StringToCharString(Local<String> v8String) {
-  uint8_t buffer[(v8String->Length() + 1)];
+const char* diag::utils::V8StringToCharString(Local<String> v8String) {
+  uint8_t* buffer = new uint8_t[(v8String->Length() + 1)];
   int ret = v8String->WriteOneByte(buffer);
   if (ret > 0) {
+    // this will leak, need to handle better
     return reinterpret_cast<const char*>(buffer);
   } else {
     return "";
   }
 }
-
-} // namespace utils
-} // namespace diag
 
