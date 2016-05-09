@@ -1,4 +1,5 @@
 #include "trace_console_listener.h"
+#include "trace_broker.h"
 
 #include <iostream>
 #include <map>
@@ -12,6 +13,10 @@ void ConsoleListener(const char* category, std::map<const char*, const char*> tr
     std::cout << it->first << ": " << it->second << std::endl;
   }
   std::cout << std::endl;
+}
+
+void RegisterConsoleListener(const FunctionCallbackInfo<Value>& info) {
+  TraceBroker::Singleton()->RegisterListener(&ConsoleListener);
 }
 
 

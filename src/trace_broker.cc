@@ -3,6 +3,8 @@
 #include "trace_console_listener.h"
 #include "v8.h"
 
+diag::trace::TraceBroker* diag::trace::TraceBroker::s_trace_broker_singleton_ = nullptr;
+
 namespace diag {
 namespace trace {
 
@@ -23,7 +25,6 @@ void TraceBroker::TraceNextTick(const char* category, std::map<const char*, cons
 }
 
 TraceBroker::TraceBroker() {
-  TraceBroker::Singleton()->RegisterListener(&diag::trace::ConsoleListener);
 }
 
 TraceBroker* TraceBroker::Singleton() {

@@ -1,4 +1,4 @@
-const trace = require('../lib/trace')();
+const trace = require('./lib/trace')();
 
 // register a JS listener
 trace.on('trace', (category, trace_obj) => {

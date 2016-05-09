@@ -1,6 +1,7 @@
 #include "node.h"
 #include "trace_module.h"
 #include "trace_broker.h"
+#include "trace_console_listener.h"
 #include "diag_utils.h"
 
 namespace diag {
@@ -22,6 +23,9 @@ void addon_context_register_func(
 
   // Provides access to JS listeners for native publishers through `_dispatchJSFromNative`.
   TraceBroker::Singleton()->set_trace_js(exports);
+
+  Local<Function> fnRegisterConsoleListener = Function::New(context, diag::trace::RegisterConsoleListener).ToLocalChecked();
+  exports->Set(CharStringToV8String("enableNativeConsoleListener"), fnRegisterConsoleListener);
 }
 
 } // namespace trace

@@ -28,7 +28,7 @@ public:
    */
   typedef void (*fp_trace_listener)(const char* category, std::map<const char*, const char*> trace_map); 
   inline void RegisterListener(fp_trace_listener listener) {
-    s_trace_listeners_native_.push_back(&listener);
+    s_trace_listeners_native_.push_back(listener);
   }
 
   static TraceBroker* Singleton();
@@ -59,13 +59,14 @@ protected:
 private:
   static TraceBroker* s_trace_broker_singleton_;
 
-  std::vector<fp_trace_listener*> s_trace_listeners_native_;
+  std::vector<fp_trace_listener> s_trace_listeners_native_;
   Local<Object> trace_js_;
 
 }; // class TraceBroker
 
 } // namespace trace
 } // namespace diag
+
 
 #endif // DIAG_TRACE_BROKER_H_
 
