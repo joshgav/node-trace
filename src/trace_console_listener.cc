@@ -16,6 +16,10 @@ void ConsoleListener(const char* category, std::map<const char*, const char*> tr
 }
 
 void RegisterConsoleListener(const FunctionCallbackInfo<Value>& info) {
+  RegisterConsoleListener();
+}
+
+void RegisterConsoleListener() {
   TraceBroker::Singleton()->RegisterListener(&ConsoleListener);
 }
 

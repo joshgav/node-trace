@@ -3,6 +3,7 @@
 
 #include "v8.h"
 #include "diag_utils.h"
+#include "diag_utils-inl.h"
 
 #include <map>
 #include <vector>
@@ -11,6 +12,7 @@ namespace diag {
 namespace trace {
 
 using namespace v8;
+using namespace node;
 
 class TraceBroker {
 
@@ -38,8 +40,9 @@ public:
    * to the JS `exports` object. This allows us to send traces from
    * native publishers to JS listeners.
    */
-  inline Local<Object> trace_js() { return trace_js_; }
-  inline void set_trace_js(Local<Object> value) { trace_js_ = value; }
+  inline Local<Object> trace_js() { return diag::utils::PersistentToLocal(Isolate::GetCurrent(), trace_js_); }
+  inline void set_trace_js(Local<Object> value) { trace_js_.Reset(Isolate::GetCurrent(), value); }
+  inline bool trace_js_is_set() { return !trace_js_.IsEmpty(); }
 
   // must be public for access from JS
   void DispatchNativeFromJS(const FunctionCallbackInfo<Value>& info);
@@ -60,7 +63,7 @@ private:
   static TraceBroker* s_trace_broker_singleton_;
 
   std::vector<fp_trace_listener> s_trace_listeners_native_;
-  Local<Object> trace_js_;
+  Persistent<Object> trace_js_;
 
 }; // class TraceBroker
 

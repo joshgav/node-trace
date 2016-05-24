@@ -1,5 +1,6 @@
-#include "node.h"
 #include "trace_module.h"
+
+#include "node.h"
 #include "trace_broker.h"
 #include "trace_console_listener.h"
 #include "diag_utils.h"
@@ -8,7 +9,6 @@ namespace diag {
 namespace trace {
 
 using namespace diag::utils;
-
 using namespace v8;
 
 void addon_context_register_func(

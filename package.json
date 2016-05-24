@@ -22,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/joshgav/node-diagnostics/issues"
   },
-  "homepage": "https://github.com/joshgav/node-diagnostics#readme"
+  "homepage": "https://github.com/joshgav/node-diagnostics#readme",
+  "dependencies": {
+    "bindings": "^1.2.1"
+  }
 }

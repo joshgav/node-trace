@@ -12,6 +12,7 @@ using namespace v8;
 
 void ConsoleListener(const char* category, std::map<const char*, const char*> trace_map);
 void RegisterConsoleListener(const FunctionCallbackInfo<Value>& info);
+void RegisterConsoleListener();
 
 } // namespace trace
 } // namespace diag

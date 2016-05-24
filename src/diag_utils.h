@@ -14,6 +14,11 @@ Local<String> CharStringToV8String(const char* charString);
 
 const char* V8StringToCharString(Local<String> v8String);
 
+template <class T>
+inline Local<T> PersistentToLocal(
+    Isolate* isolate,
+    const Persistent<T>& persistent);
+
 } // namespace utils
 } // namespace diag
 
